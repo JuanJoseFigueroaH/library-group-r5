@@ -1,12 +1,13 @@
 deployment:
-  host: 127.0.0.0
+  host: 0.0.0.0
   port: 3000
   log_level: info
-  workers: 8
+  workers: 5
 
-database:
-  connection: postgresql://usuario:contraseña@localhost/mi_base_de_datos
-open_api:
+db:
+  connection: postgresql://postgres:1234@localhost/library-group-r5
+
+api:
   google_books:
     base_url: https://www.googleapis.com/books/v1/volumes
   open_libra:
