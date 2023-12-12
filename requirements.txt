@@ -1,6 +1,13 @@
 fastapi==0.72.0
 asyncpg==0.25.0
 aiohttp[client]==3.8.1
-graphene==3.0
+dependency-injector==4.37.0
+retry==0.9.2
+SQLAlchemy==1.4.31
+PyYAML==6.0
+black==20.8b1
 uvicorn==0.17.0
-starlette_graphene3==0.6.0
+pytest-asyncio==0.17.2
+pytest-cov==2.10.1
+requests==2.27.1
+strawberry-graphql[fastapi]==0.203.0
