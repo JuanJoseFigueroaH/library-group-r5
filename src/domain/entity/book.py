@@ -6,6 +6,7 @@ class BookEntity(BaseModel):
     title: Optional[str] 
     subtitle: Optional[str]
     authors: Optional[Set[str]]
+    author: Optional[Set[str]]
     categories: Optional[Set[str]]
     datetime_publication: Optional[str]
     editor: Optional[str]

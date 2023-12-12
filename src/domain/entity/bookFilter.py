@@ -7,3 +7,7 @@ class BookFilter(BaseModel):
     subtitle: Optional[str]
     author: Optional[str]
     category: Optional[str]
+    datetime_publication: Optional[str]
+    editor: Optional[str]
+    description: Optional[str]
+

@@ -17,8 +17,13 @@ class BookService(IBookService):
         self._log = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     async def get_books(self, filter: BookFilter) -> BookDTOEntity:
-        internal_book = await self._book_repository.get_books(filter)
+        internal_book = await self._book_repository.getBook(filter)
         if internal_book.books:
             return internal_book
+
+        external_book = await self._book_external_repository.get_books(filter)
+        if external_book.books:
+            return external_book
+        
         
         return BookDTOEntity(books=list(), source=None)

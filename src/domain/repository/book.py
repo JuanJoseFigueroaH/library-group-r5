@@ -11,7 +11,7 @@ import logging
 
 class IBookRepository(ABC):
     @abstractmethod
-    async def get_books(self, filters: BookFilter) -> BookDTOEntity:
+    async def getBook(self, filters: BookFilter) -> BookDTOEntity:
         raise NotImplementedError
 
 class BookRepository(IBookRepository):
@@ -19,19 +19,19 @@ class BookRepository(IBookRepository):
         self._context = context
         self._log = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
     
-    async def _get_all_books_by_session(self, query):
+    async def getAllBookBySession(self, query):
         async with self._context.create_session() as session:
             data = await session.execute(query)
             return data.all()
 
-    async def get_books(self, filters: BookFilter) -> BookDTOEntity:
+    async def getBook(self, filters: BookFilter) -> BookDTOEntity:
         books = BookDTOEntity(books=list(), source=SourceEntity.internal)
         alias_author: Author = aliased(Author)
         alias_category: Category = aliased(Category)
         alias_editor: Editor = aliased(Editor)
         query = (
             select(Book)
-            .options(selectinload(Book.publisher))
+            .options(selectinload(Book.editor))
             .options(selectinload(Book.authors))
             .options(selectinload(Book.categories))
             .join(alias_author, Book.authors, isouter=True)
@@ -55,7 +55,7 @@ class BookRepository(IBookRepository):
             any_criterian.append(func.lower(Book.description).like(f"%{filters.description.lower()}%"))
             
         if filters.datetime_publication:
-            any_criterian.append(Book.publisher_date == filters.datetime_publication)
+            any_criterian.append(Book.editor_date == filters.datetime_publication)
             
         if filters.author:
             any_criterian.append(func.lower(alias_author.name).like(f"%{filters.author.lower()}%"))
@@ -72,7 +72,7 @@ class BookRepository(IBookRepository):
         query = query.where(or_(*any_criterian))
 
         try:
-            result = await self._get_all_books_by_session(query)
+            result = await self.getAllBookBySession(query)
         except Exception as error:
             self._log.exception(
                 "An error occurred while trying to query the data repository",
@@ -104,4 +104,58 @@ class BookRepository(IBookRepository):
             books.books = book_list
         
         return books
+    
+    async def save_book(self, book: BookEntity):
+        try:
+            async with self._context.create_session() as session:
+                editor: Optional[Editor] = None
+                authors: List[Author] = list()
+                categories: List[Category] = list()
+                async with session.begin():
+                    if book.editor:
+                        if editor_exists := (await session.execute(select(Editor).where(Editor.name == book.editor))).one_or_none():
+                            editor = editor_exists[0]
+                        else:
+                            editor = Editor(name=book.editor)
+                            session.add(editor)
+                        
+                    if book.authors:
+                        authors: List[Author] = list()
+                        for author in book.authors:
+                            if author_exists := (await session.execute(select(Author).where(Author.name == author))).one_or_none():
+                                authors.append(author_exists[0])
+                            else:
+                                author = Author(name=author)
+                                authors.append(author)
+                                session.add(author)
+                        
+                    if book.categories:
+                        categories: List[Category] = list()
+                        for category in book.categories:
+                            if category_exists := (await session.execute(select(Category).where(Category.name == category))).one_or_none():
+                                categories.append(category_exists[0])
+                            else:
+                                category = Category(name=category)
+                                categories.append(category)
+                                session.add(category)
+                        
+                async with session.begin():
+                    _book = Book(
+                        id=book.id,
+                        title=book.title,
+                        subtitle=book.subtitle,
+                        description=book.description,
+                        editor_date=book.datetime_publication,
+                        image=book.image_link,
+                        editor=editor,
+                        authors=authors,
+                        categories=categories
+                    )
+                    session.add(_book)
+        except Exception as error:
+            self._log.exception(
+                "An error occurred while trying to persist in the data repository",
+                exc_info=error
+            )
+            return
     

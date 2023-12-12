@@ -13,6 +13,9 @@ async def getBook(
     subtitle: Optional[str]=None,
     author: Optional[str]=None,
     category: Optional[str]=None,
+    datetime_publication: Optional[str]=None,
+    editor: Optional[str]=None,
+    description: Optional[str]=None,
     service: IBookService=Depends(Provide[Container.service_book])
 ):
     books = await service.get_books(
@@ -21,7 +24,10 @@ async def getBook(
             title=title,
             subtitle=subtitle,
             author=author,
-            category=category
+            category=category,
+            datetime_publication=datetime_publication,
+            editor=editor,
+            description=description,
         )
     )
     
@@ -39,5 +45,4 @@ async def deleteBook(
     id: str,
     service: IBookService=Depends(Provide[Container.service_book])
 ):
-    await service.delete_book(id)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    pass

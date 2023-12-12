@@ -7,6 +7,9 @@ from src.application.graphql.query import Query
 from src.application.graphql.mutation import Mutation
 
 app = FastAPI()
+container = Container()
+container.init_resources()
+app.container = container
 
 @app.get('/')
 def home():
