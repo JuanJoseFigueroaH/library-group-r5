@@ -13,7 +13,7 @@ app = FastAPI()
 def home():
     return "Welcome application!"
 
-schema = strawberry.Schema(query=Query)
+schema = strawberry.Schema(query=Query, mutation=Mutation)
 graphql_app = GraphQLRouter(schema)
 
 app.include_router(graphql_app, prefix="/graphql")
