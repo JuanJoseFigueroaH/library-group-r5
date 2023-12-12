@@ -19,6 +19,6 @@ if __name__ == '__main__':
         host=host, 
         port=port, 
         log_level=log_level, 
-        reload=False, 
+        reload=True, 
         workers=workers
     )

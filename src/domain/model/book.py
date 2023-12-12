@@ -3,6 +3,16 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table
 
 Base = declarative_base()
 
+books_authors = Table("books_authors", Base.metadata,
+    Column("book_id", String, ForeignKey("books.id"), primary_key=True),
+    Column("author_id", Integer, ForeignKey("authors.id"), primary_key=True)
+)
+
+books_categories = Table("books_categories", Base.metadata,
+    Column("book_id", String, ForeignKey("books.id"), primary_key=True),
+    Column("category_id", Integer, ForeignKey("categories.id"), primary_key=True)
+)
+
 class Author(Base):
     __tablename__ = 'authors'
     
@@ -36,14 +46,3 @@ class Book(Base):
     
     authors = relationship("Author", secondary=books_authors, backref=backref("books", lazy=True))
     categories = relationship("Category", secondary=books_categories, backref=backref("books", lazy=True))
-    
-books_authors = Table("books_authors", Base.metadata,
-    Column("book_id", String, ForeignKey("books.id"), primary_key=True),
-    Column("author_id", Integer, ForeignKey("authors.id"), primary_key=True)
-)
-
-books_categories = Table("books_categories", Base.metadata,
-    Column("book_id", String, ForeignKey("books.id"), primary_key=True),
-    Column("category_id", Integer, ForeignKey("categories.id"), primary_key=True)
-)
-
