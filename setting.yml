@@ -5,7 +5,7 @@ deployment:
   workers: 5
 
 db:
-  connection: postgresql+asyncpg://postgres:1234@localhost/library-group-r5
+  connection: postgresql+asyncpg://postgres:MUR6xNggku9uLkmplBGc@database-group-r5-library.ckqsrnmllatb.us-east-1.rds.amazonaws.com/group-r5-library
 
 api:
   google:
