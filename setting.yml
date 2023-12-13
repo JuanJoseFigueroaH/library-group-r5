@@ -5,10 +5,10 @@ deployment:
   workers: 5
 
 db:
-  connection: postgresql://postgres:1234@localhost/library-group-r5
+  connection: postgresql+asyncpg://postgres:1234@localhost/library-group-r5
 
 api:
-  google_books:
+  google:
     base_url: https://www.googleapis.com/books/v1/volumes
-  open_libra:
+  open:
     base_url: https://www.etnassoft.com/api/v1/get

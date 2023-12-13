@@ -7,7 +7,6 @@ from src.domain.service import BookService, IBookService
 
 @inject
 async def getBook(
-    backgroud_task: BackgroundTasks,
     id: Optional[str]=None,
     title: Optional[str]=None, 
     subtitle: Optional[str]=None,
@@ -32,7 +31,10 @@ async def getBook(
     )
     
     if books.source == SourceEntity.external:
-        backgroud_task.add_task(service.save_books_external, books.books)
+        print("EXTERNAL")
+        print(books.books)
+        await service.save_books_external(books.books)
+        ###backgroud_task.add_task(, books.books)
         
     return BaseResponseDTO(
         api_version="1.0.0", 
@@ -45,4 +47,5 @@ async def deleteBook(
     id: str,
     service: IBookService=Depends(Provide[Container.service_book])
 ):
-    pass
+    await service.delete_book(id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

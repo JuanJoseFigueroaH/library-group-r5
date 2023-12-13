@@ -4,5 +4,5 @@ from src.application.entryPoint import deleteBook
 class Mutation:
     
     @strawberry.mutation
-    async def delete_book(self, bookId: int) -> str:
+    async def delete_book(self, bookId: str) -> str:
         return await deleteBook(bookId)

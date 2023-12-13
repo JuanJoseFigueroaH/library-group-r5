@@ -13,6 +13,14 @@ class IBookRepository(ABC):
     @abstractmethod
     async def getBook(self, filters: BookFilter) -> BookDTOEntity:
         raise NotImplementedError
+    
+    @abstractmethod
+    async def delete_book(self, id: str):
+        raise NotImplementedError
+    
+    @abstractmethod
+    async def save_book(self, book: BookEntity):
+        raise NotImplementedError
 
 class BookRepository(IBookRepository):
     def __init__(self, context: IPostgresContext):
@@ -20,11 +28,12 @@ class BookRepository(IBookRepository):
         self._log = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
     
     async def getAllBookBySession(self, query):
-        async with self._context.create_session() as session:
+        async with self._context.establish_session() as session:
             data = await session.execute(query)
             return data.all()
 
     async def getBook(self, filters: BookFilter) -> BookDTOEntity:
+        print("Juan Jose Figueroa")
         books = BookDTOEntity(books=list(), source=SourceEntity.internal)
         alias_author: Author = aliased(Author)
         alias_category: Category = aliased(Category)
@@ -107,7 +116,7 @@ class BookRepository(IBookRepository):
     
     async def save_book(self, book: BookEntity):
         try:
-            async with self._context.create_session() as session:
+            async with self._context.establish_session() as session:
                 editor: Optional[Editor] = None
                 authors: List[Author] = list()
                 categories: List[Category] = list()
@@ -158,4 +167,10 @@ class BookRepository(IBookRepository):
                 exc_info=error
             )
             return
+        
+    async def delete_book(self, id: str):
+        query = delete(Book).where(Book.id == id)
+        async with self._context.establish_session() as session:
+            async with session.begin():
+                await session.execute(query)
     
