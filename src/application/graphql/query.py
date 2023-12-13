@@ -1,7 +1,6 @@
-from typing import List, Optional
+from typing import Optional
 import strawberry
-from dependency_injector.wiring import inject, Provide
-from src.application.graphql.schema import BookType, BaseResponseDTO
+from src.application.graphql.schema import BaseResponseGetDTO
 from src.application.entryPoint import getBook
 @strawberry.type
 class Query:
@@ -16,5 +15,5 @@ class Query:
         datetime_publication: Optional[str] = None,
         editor: Optional[str] = None,
         description: Optional[str] = None
-    )-> BaseResponseDTO:
+    )-> BaseResponseGetDTO:
         return await getBook(id, title, subtitle, author, category, datetime_publication, editor, description)

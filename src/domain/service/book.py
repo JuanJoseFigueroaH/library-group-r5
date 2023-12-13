@@ -28,11 +28,11 @@ class BookService(IBookService):
         self._log = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     async def get_books(self, filter: BookFilter) -> BookDTOEntity:
-        print("GET BOOKS - SERVICE")
         internal_book = await self._book_repository.getBook(filter)
         if internal_book.books:
             return internal_book
         external_book = await self._book_external_repository.get_books(filter)
+        print(external_book)
         if external_book.books:
             return external_book
         
@@ -40,7 +40,6 @@ class BookService(IBookService):
         return BookDTOEntity(books=list(), source=None)
     
     async def save_books_external(self, books: List[BookEntity]):
-        print("GUARDAR BOOKS")
         self._log.info("Initialize background task- save books of source external")
         for book in books:
             await self._book_repository.save_book(book)

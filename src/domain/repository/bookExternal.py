@@ -40,10 +40,8 @@ class BookExternalRepository(IBookExternalRepository):
         return BookDTOEntity(books=books, source=SourceEntity.external)
     
     async def _get_books_of_google_books(self, filters: BookFilter) -> List[BookEntity]:
-        print("Books Google")
         books: List[BookEntity] = list()
         filtered_mappers = list()
-        print(filters)
         if filters.title:
             filtered_mappers.append(f"intitle:{filters.title}")
             
@@ -57,9 +55,7 @@ class BookExternalRepository(IBookExternalRepository):
             return books
             
         url_filtered = f"?fields=items(volumeInfo)&q={'+'.join(filtered_mappers).replace(' ', '%20')}"
-        print(url_filtered)
         try:
-            print("Entro petición")
             http_data, http_status = (
                 await self._http_client.get(f"{self._base_url_google_books}{url_filtered}")
             )
@@ -69,7 +65,6 @@ class BookExternalRepository(IBookExternalRepository):
                 exc_info=error
             )
             return books
-        print(http_status)
         if http_status == 200:
             result = loads(http_data)
             for book in result.get("items", []):

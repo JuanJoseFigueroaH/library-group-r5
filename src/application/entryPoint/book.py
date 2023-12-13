@@ -31,14 +31,11 @@ async def getBook(
     )
     
     if books.source == SourceEntity.external:
-        print("EXTERNAL")
-        print(books.books)
         await service.save_books_external(books.books)
-        ###backgroud_task.add_task(, books.books)
         
     return BaseResponseDTO(
-        api_version="1.0.0", 
-        method=f"{__name__}.get", 
+        statusCode="200", 
+        message="Successfully get book",
         data=books
     )
 
@@ -48,4 +45,8 @@ async def deleteBook(
     service: IBookService=Depends(Provide[Container.service_book])
 ):
     await service.delete_book(id)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return BaseResponseDTO(
+        statusCode="200", 
+        message="Successfully deleted book",
+        data=id
+    )

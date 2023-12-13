@@ -33,7 +33,6 @@ class BookRepository(IBookRepository):
             return data.all()
 
     async def getBook(self, filters: BookFilter) -> BookDTOEntity:
-        print("Juan Jose Figueroa")
         books = BookDTOEntity(books=list(), source=SourceEntity.internal)
         alias_author: Author = aliased(Author)
         alias_category: Category = aliased(Category)

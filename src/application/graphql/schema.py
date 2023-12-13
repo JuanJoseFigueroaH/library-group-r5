@@ -29,10 +29,13 @@ class BookResponse:
     books: List[BookTypeEntity]
     source: Optional[str]
 @strawberry.type
-class BaseResponseDTO:
-    api_version: str
-    method: str
+class BaseResponseGetDTO:
+    statusCode: str
+    message: str
     data: BookResponse
-
-
-
+    
+@strawberry.type
+class BaseResponseDeleteDTO:
+    statusCode: str
+    message: str
+    data: Optional[str]
