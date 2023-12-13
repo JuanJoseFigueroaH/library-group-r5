@@ -39,5 +39,5 @@ pytest -v --cov src --cov-report html --cov-config=.coveragerc test
 ```
   
 ## Usage Example
-- [`GRAPHQL`]()
+- [`GRAPHQL`](http://ec2-50-19-44-158.compute-1.amazonaws.com:3000/graphql)
 -- Nota: Filtros validos para GET Book (id, title, subtitle, author, category, datetime_publication, editor, description)
